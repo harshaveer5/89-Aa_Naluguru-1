@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Issue Certificate</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #a8c0ff, #3f2b96);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        input {
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #000;
+        }
+
+        input:focus {
+            outline: none;
+            background-color: #fff;
+        }
+
+        button {
+            background-color: #ffffff;
+            color: #0072ff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #e0e0e0;
+        }
+
+        #response {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .back-button {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        .back-button:hover {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Issue Certificate</h1>
+        <form id="issue-form">
+            <input type="text" name="sender" placeholder="Sender Institution" required>
+            <input type="text" name="recipient" placeholder="Recipient Name" required>
+            <input type="text" name="certificate_id" placeholder="Certificate ID" required>
+            <input type="text" name="course" placeholder="Course Name" required>
+            <input type="date" name="date_issued" required>
+            <button type="submit">Issue Certificate</button>
+        </form>
+        <div id="response"></div>
+        <a href="{{ url_for('index') }}" class="back-button">← Back to Home</a>
+    </div>
+
+    <script>
+        document.getElementById("issue-form").onsubmit = async function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            const res = await fetch("/api/issue", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            const result = await res.json();
+            document.getElementById("response").innerText = result.message || result.error;
+        };
+    </script>
+</body>
+</html>

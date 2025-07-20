@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Verify Certificate</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #6dd5ed, #2193b0);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      width: 350px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    input[type="text"], button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    input[type="text"] {
+      background-color: #fff;
+      color: #000;
+    }
+
+    button {
+      background-color: white;
+      color: #2193b0;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #f0f0f0;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Verify Certificate</h1>
+    <form id="verify-form">
+      <input type="text" id="certificate-id" placeholder="Enter Certificate ID" required>
+      <button type="submit">Verify</button>
+    </form>
+    <div id="result"></div>
+  </div>
+
+  <!-- ✅ JS placed at bottom so DOM is loaded -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById("verify-form").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const certId = document.getElementById("certificate-id").value;
+
+        try {
+          const response = await fetch(`/api/verify?id=${encodeURIComponent(certId)}`);
+          const data = await response.json();
+
+          const result = document.getElementById("result");
+          if (data.valid) {
+            result.innerHTML = `
+              ✅ Valid Certificate<br>
+              Issuer: ${data.transaction.sender}<br>
+              Recipient: ${data.transaction.recipient}<br>
+              Course: ${data.transaction.certificate.course}<br>
+              Date: ${data.transaction.certificate.date_issued}
+            `;
+          } else {
+            result.innerText = `❌ Certificate not found`;
+          }
+        } catch (error) {
+          console.error(error);
+          document.getElementById("result").innerText = "⚠️ Error contacting server.";
+        }
+      });
+    });
+  </script>
+</body>
+</html>

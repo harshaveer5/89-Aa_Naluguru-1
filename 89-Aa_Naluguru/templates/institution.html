@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Issue Certificate</title>
+  <style>
+    body {
+      margin:0;
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:linear-gradient(to right, #a8c0ff, #3f2b96);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .form {
+      background:rgba(255,255,255,0.1);
+      padding:40px;
+      border-radius:12px;
+      box-shadow:0 8px 32px rgba(0,0,0,0.2);
+      width:100%;
+      max-width:400px;
+      color:#fff;
+    }
+    input, button {
+      width:100%;
+      padding:12px;
+      margin:8px 0;
+      border:none;
+      border-radius:8px;
+    }
+    input {
+      background:rgba(255,255,255,0.8);
+      color:#000;
+    }
+    button {
+      background:#ffffff;
+      color:#0072ff;
+      font-weight:bold;
+      cursor:pointer;
+      transition:0.3s;
+    }
+    button:hover { background:#e0e0e0; }
+    .back { text-decoration:underline; margin-top:20px; display:block; color:#fff; }
+  </style>
+</head>
+<body>
+  <div class="form">
+    <h1>Issue Certificate</h1>
+    <input id="sender" placeholder="Institution" required>
+    <input id="recipient" placeholder="Student" required>
+    <input id="certificate_id" placeholder="Certificate ID" required>
+    <input id="course" placeholder="Course" required>
+    <input id="date_issued" type="date" required>
+    <button onclick="issueCert()">Issue</button>
+    <p id="msg"></p>
+    <a href="/" class="back">← Back to Home</a>
+  </div>
+  <script>
+    async function issueCert() {
+      const payload = {
+        sender: document.getElementById('sender').value,
+        recipient: document.getElementById('recipient').value,
+        certificate_id: document.getElementById('certificate_id').value,
+        course: document.getElementById('course').value,
+        date_issued: document.getElementById('date_issued').value
+      };
+      const res = await fetch('/api/issue', {
+        method: 'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      document.getElementById('msg').innerText = data.message || data.error;
+    }
+  </script>
+</body>
+</html>

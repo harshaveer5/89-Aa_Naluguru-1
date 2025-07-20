@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Blockchain View</title>
+  <style>
+    body { font-family: Arial; background: #fff; padding: 20px; }
+    pre { background: #eee; padding: 15px; border-radius: 5px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h2>Blockchain Contents</h2>
+  <pre id="chainDisplay">Loading...</pre>
+
+  <script>
+    fetch('/api/full-chain')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('chainDisplay').innerText = JSON.stringify(data, null, 2);
+      });
+  </script>
+</body>
+</html>
